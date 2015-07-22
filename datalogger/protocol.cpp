@@ -28,14 +28,14 @@ void Protocol::send_msp(uint8_t opcode, uint8_t * data, uint8_t n_bytes) {
 
   uint8_t checksum = 0;
 
-  Serial.write((byte *)"$M<", 3);
-  Serial.write(n_bytes);
+  MWSERIAL.write((byte *)"$M<", 3);
+  MWSERIAL.write(n_bytes);
   checksum ^= n_bytes;
 
-  Serial.write(opcode);
+  MWSERIAL.write(opcode);
   checksum ^= opcode;
 
-  Serial.write(checksum);
+  MWSERIAL.write(checksum);
 }
 
 XYAngle Protocol::evalAtt(uint8_t inBuf[]) {

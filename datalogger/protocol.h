@@ -1,3 +1,7 @@
+
+#define MWSERIAL Serial //serial0
+#define DEBUG Serial1 //serial1
+
 #ifndef serialstate_h
 #define serialstate_h
 #include "serialstate.h"

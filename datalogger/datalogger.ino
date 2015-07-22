@@ -1,15 +1,9 @@
-#include <SD.h>
-
+//
 #include "protocol.h"
 
 #ifndef serialstate_h
 #define serialstate_h
 #include "serialstate.h"
-#endif
-
-#ifndef cardlogger_h
-#define cardlogger_h
-#include "cardlogger.h"
 #endif
 
 #define INBUF_SIZE 64
@@ -21,14 +15,19 @@ static uint8_t offset;
 static uint8_t dataSize;
 
 static Protocol p;
-static CardLogger logger;
-int8_t c,n;  
+int8_t c,n;
+
+
+//see protocol.cpp for serial number definition
 
 void setup()  
 {
 
-  Serial.begin(115200);
-  logger.init();
+  DEBUG.begin(9600);
+  MWSERIAL.begin(115200);
+  
+  
+  DEBUG.println("Setup");
 
 }
 
@@ -54,9 +53,9 @@ void readData() {
 
   delay(60);
 
-  while (Serial.available()) {
+  while (MWSERIAL.available()) {
 
-    byte c = Serial.read();
+    byte c = MWSERIAL.read();
 
     if (c_state == IDLE) {
       c_state = (c=='$') ? HEADER_START : IDLE;
@@ -95,19 +94,21 @@ void readData() {
       if (checksum == c) {
         if (commandMW == MSP_ATTITUDE) {
           XYAngle result = p.evalAtt(inBuf);
-          logger.logXYAngle(result);
+          DEBUG.print("Attitude Recieved: ");//example output
+          DEBUG.println(result.heading);
         }
         if (commandMW == MSP_RAW_IMU) {
           IMUValues result = p.evalIMU(inBuf);
-          logger.logIMU(result);
+          
         }
         if (commandMW == MSP_RC) {
           RCInput result = p.evalRC(inBuf);
-          logger.logRC(result);
+         
         }
         if (commandMW == MSP_RAW_GPS) {
           GPSValues result = p.evalGPS(inBuf);
-          logger.logGPS(result);
+          
+          
         }
 
       } 
